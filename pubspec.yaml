@@ -23,8 +23,9 @@ dependencies:
   path_provider: ^0.5.0+1
   flutter_native_image:
     git: https://github.com/btastic/flutter_native_image.git
-  photo_view: ^0.2.4
+  photo_view: ^0.5.0
   flutter_speed_dial: ^1.2.1
+  shared_preferences: ^0.5.1+2
 
 
   # The following adds the Cupertino Icons font to your application.

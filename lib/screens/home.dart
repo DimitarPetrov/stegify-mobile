@@ -10,8 +10,8 @@ typedef bool IsDarkThemeCallback();
 typedef void ChangeThemeCallback();
 
 class Home extends StatefulWidget {
-  IsDarkThemeCallback isDark;
-  ChangeThemeCallback changeTheme;
+  final IsDarkThemeCallback isDark;
+  final ChangeThemeCallback changeTheme;
 
   Home({Key key, this.isDark, this.changeTheme}) : super(key: key);
 
