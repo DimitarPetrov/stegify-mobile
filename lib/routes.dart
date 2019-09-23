@@ -35,9 +35,22 @@ class _StegifyState extends State<Stegify> {
       title: 'Stegify',
       initialRoute: '/',
       routes: {
-        '/': (context) => Home(),
+        '/': (context) => Home(
+              isDark: _isDarkTheme,
+              changeTheme: _changeTheme,
+            ),
       },
       theme: isDarkTheme ? dark : light,
     );
+  }
+
+  bool _isDarkTheme() {
+    return this.isDarkTheme;
+  }
+
+  void _changeTheme() {
+    setState(() {
+      this.isDarkTheme = !this.isDarkTheme;
+    });
   }
 }
