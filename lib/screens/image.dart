@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:path/path.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -60,6 +61,31 @@ class ImageScreenState extends State<ImageScreen> {
           color: Theme.of(context).backgroundColor,
         ),
       ),
+      floatingActionButton: _actionButton(context),
+    );
+  }
+
+  Widget _actionButton(BuildContext context) {
+    return SpeedDial(
+      animatedIcon: AnimatedIcons.menu_close,
+      visible: true,
+      curve: Curves.bounceIn,
+      children: [
+        SpeedDialChild(
+          child: Icon(Icons.call_merge),
+          onTap: () {},
+          label: 'Encode',
+          labelStyle: Theme.of(context).textTheme.button,
+          labelBackgroundColor: Theme.of(context).backgroundColor,
+        ),
+        SpeedDialChild(
+          child: Icon(Icons.call_split),
+          onTap: () {},
+          label: 'Decode',
+          labelStyle: Theme.of(context).textTheme.button,
+          labelBackgroundColor: Theme.of(context).backgroundColor,
+        ),
+      ],
     );
   }
 }

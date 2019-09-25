@@ -54,7 +54,8 @@ class _HomeState extends State<Home> {
             ),
           ),
           ListTile(
-            leading: Text(
+            leading: Icon(Icons.brightness_3),
+            title: Text(
               "Dark Mode",
               style: Theme.of(context)
                   .textTheme
