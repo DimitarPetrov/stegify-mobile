@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:path/path.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:stegify_mobile/screens/encode.dart';
 
 typedef Future DeleteCallback(BuildContext context, List<int> indexes);
 
@@ -73,7 +75,12 @@ class ImageScreenState extends State<ImageScreen> {
       children: [
         SpeedDialChild(
           child: Icon(Icons.call_merge),
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(builder: (context) => EncodeScreen()),
+            );
+          },
           label: 'Encode',
           labelStyle: Theme.of(context).textTheme.button,
           labelBackgroundColor: Theme.of(context).backgroundColor,

@@ -44,7 +44,7 @@ class _HomeState extends State<Home> {
               "Stegify",
               style: Theme.of(context).textTheme.title.apply(fontSizeDelta: 4),
             ),
-            accountEmail: Text("Developer Contact: d.n.petrovv@gmail.com"),
+            accountEmail: Text("Developer Contact: d.n.petrovv@gmail.com"), // TODO: Rate ot Google play!
             currentAccountPicture: CircleAvatar(
               backgroundColor: Theme.of(context).primaryColorLight,
               child: Text(

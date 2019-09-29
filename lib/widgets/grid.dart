@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stegify_mobile/models/image.dart';
 import 'package:stegify_mobile/screens/image.dart';
@@ -36,7 +37,7 @@ class Grid extends StatelessWidget {
                           .compareTo(extractSequence(f2.path)));
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
+                        CupertinoPageRoute(
                           builder: (context) => ImageScreen(
                               images: images,
                               index: findIndex(images, image.sequence)),
