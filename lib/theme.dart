@@ -19,6 +19,7 @@ final ThemeData light = ThemeData(
   accentColor: lightAccent,
   cursorColor: lightAccent,
   scaffoldBackgroundColor: lightBackground,
+  buttonColor: dark.buttonColor,
   fontFamily: 'SF Pro Display',
   appBarTheme: AppBarTheme(
     elevation: 0,
