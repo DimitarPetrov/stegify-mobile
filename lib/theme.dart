@@ -17,7 +17,7 @@ final ThemeData light = ThemeData(
   backgroundColor: lightBackground,
   primaryColor: lightPrimary,
   accentColor: lightAccent,
-  cursorColor: lightAccent,
+  cursorColor: const Color(0x1F000000),
   scaffoldBackgroundColor: lightBackground,
   buttonColor: dark.buttonColor,
   fontFamily: 'SF Pro Display',
@@ -40,7 +40,7 @@ final ThemeData dark = ThemeData(
   primaryColor: darkPrimary,
   accentColor: darkAccent,
   scaffoldBackgroundColor: darkBackground,
-  cursorColor: darkAccent,
+  cursorColor: Colors.white10,
   fontFamily: 'SF Pro Display',
   appBarTheme: AppBarTheme(
     elevation: 0,

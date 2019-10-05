@@ -26,6 +26,7 @@ dependencies:
   photo_view: ^0.5.0
   flutter_speed_dial: ^1.2.1
   shared_preferences: ^0.5.1+2
+  zefyr: ^0.8.0
 
 
   # The following adds the Cupertino Icons font to your application.
