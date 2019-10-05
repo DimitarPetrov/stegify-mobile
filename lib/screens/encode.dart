@@ -163,7 +163,6 @@ class EncodeScreenState extends State<EncodeScreen> {
                   flex: 3,
                   child: Container(
                     decoration: new BoxDecoration(
-                      //cursor
                       color: Theme.of(context).cursorColor,
                       border: new Border.all(
                           width: 3,

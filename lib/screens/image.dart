@@ -10,6 +10,8 @@ import 'package:stegify_mobile/models/image.dart';
 import 'package:stegify_mobile/screens/encode.dart';
 import 'package:stegify_mobile/util/utils.dart';
 
+import 'decode.dart';
+
 typedef Future DeleteCallback(BuildContext context, List<int> indexes);
 
 class ImageScreen extends StatefulWidget {
@@ -83,10 +85,11 @@ class ImageScreenState extends State<ImageScreen> {
             Navigator.push(
               context,
               CupertinoPageRoute(
-                  builder: (context) => EncodeScreen(
-                        image: Image.file(widget.images[currentIndex]),
-                        thumbnails: thumbnails,
-                      )),
+                builder: (context) => EncodeScreen(
+                  image: Image.file(widget.images[currentIndex]),
+                  thumbnails: thumbnails,
+                ),
+              ),
             );
           },
           label: 'Encode',
@@ -95,7 +98,16 @@ class ImageScreenState extends State<ImageScreen> {
         ),
         SpeedDialChild(
           child: Icon(Icons.call_split),
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => DecodeScreen(
+                  image: Image.file(widget.images[currentIndex]),
+                ),
+              ),
+            );
+          },
           label: 'Decode',
           labelStyle: Theme.of(context).textTheme.button,
           labelBackgroundColor: Theme.of(context).backgroundColor,
