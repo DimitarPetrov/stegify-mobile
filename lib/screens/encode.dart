@@ -80,6 +80,7 @@ class EncodeScreenState extends State<EncodeScreen> {
           ),
         ),
         body: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
             Column(
               mainAxisSize: MainAxisSize.max,

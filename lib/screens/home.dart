@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:stegify_mobile/models/event.dart';
 import 'package:stegify_mobile/util/utils.dart';
 import 'package:stegify_mobile/widgets/grid.dart';
 
@@ -22,13 +24,76 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>(); // ADD THIS LINE
+  bool selecting = false;
+  StreamController<Event> _controller = StreamController<Event>();
+
+  @override
+  void dispose() {
+    _controller.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Stegify"),
+        leading: selecting
+            ? IconButton(
+                icon: Icon(Icons.clear),
+                onPressed: () {
+                  setState(() {
+                    selecting = !selecting;
+                    _controller.add(Event.SELECTING);
+                  });
+                },
+              )
+            : IconButton(
+                icon: Icon(Icons.menu),
+                onPressed: () {
+                  _scaffoldKey.currentState.openDrawer();
+                },
+              ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.delete),
+            tooltip: "Delete",
+            onPressed: () {
+              setState(() {
+                if (!selecting) {
+                  setState(() {
+                    selecting = !selecting;
+                  });
+                }
+                _controller.add(Event.DELETE);
+              });
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.share),
+            tooltip: "Share",
+            onPressed: () {
+              setState(() {
+                if (!selecting) {
+                  setState(() {
+                    selecting = !selecting;
+                  });
+                }
+                _controller.add(Event.SHARE);
+              });
+            },
+          ),
+        ],
       ),
-      body: Grid(),
+      body: Grid(
+          stream: _controller.stream,
+          selection: () {
+            setState(() {
+              selecting = !selecting;
+            });
+          }),
       drawer: _drawer(),
       floatingActionButton: _actionButton(),
     );
@@ -44,7 +109,8 @@ class _HomeState extends State<Home> {
               "Stegify",
               style: Theme.of(context).textTheme.title.apply(fontSizeDelta: 4),
             ),
-            accountEmail: Text("Developer Contact: d.n.petrovv@gmail.com"), // TODO: Rate ot Google play!
+            accountEmail: Text(
+                "Developer Contact: d.n.petrovv@gmail.com"), // TODO: Rate ot Google play!
             currentAccountPicture: CircleAvatar(
               backgroundColor: Theme.of(context).primaryColorLight,
               child: Text(

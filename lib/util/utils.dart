@@ -72,3 +72,16 @@ void saveImage(File image) async {
 
   pref.setInt(SHARED_PREFERENCES_SEQUENCE_KEY, sequence);
 }
+
+void deleteImage(int sequence) async {
+  Directory appDocDir = await getApplicationDocumentsDirectory();
+  deleteImageByDirectory(
+      new Directory(appDocDir.path + '/' + IMAGES_DIR), sequence);
+  deleteImageByDirectory(
+      new Directory(appDocDir.path + '/' + THUMBNAILS_DIR), sequence);
+}
+
+void deleteImageByDirectory(Directory directory, int sequence) {
+  File.fromUri(directory.uri.resolve(sequence.toString()))
+      .deleteSync(recursive: true);
+}

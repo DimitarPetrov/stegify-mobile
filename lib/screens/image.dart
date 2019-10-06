@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -12,13 +13,15 @@ import 'package:stegify_mobile/util/utils.dart';
 
 import 'decode.dart';
 
-typedef Future DeleteCallback(BuildContext context, List<int> indexes);
+typedef Future DeleteCallback(List<int> indexes);
 
 class ImageScreen extends StatefulWidget {
   final List<File> images;
   final int index;
+  final DeleteCallback deleteCallback;
 
-  ImageScreen({Key key, this.images, this.index}) : super(key: key);
+  ImageScreen({Key key, this.images, this.index, this.deleteCallback})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -42,6 +45,32 @@ class ImageScreenState extends State<ImageScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Stegify"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.share),
+            onPressed: () async {
+              int sequence = extractSequence(widget.images[currentIndex].path);
+              File f = await getOriginalImage(sequence.toString());
+              await Share.file(
+                  sequence.toString(),
+                  sequence.toString() + ".jpg",
+                  f.readAsBytesSync(),
+                  'image/jpg');
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              widget.deleteCallback(<int>[
+                extractSequence(widget.images[currentIndex].path)
+              ]).then((val) {
+                if (val) {
+                  Navigator.pop(context);
+                }
+              });
+            },
+          )
+        ],
       ),
       body: PhotoViewGallery.builder(
         builder: (context, index) {
