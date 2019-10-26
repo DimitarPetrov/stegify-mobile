@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
+import 'package:flutter_stegify/flutter_stegify.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stegify_mobile/models/image.dart';
@@ -84,4 +86,33 @@ void deleteImage(int sequence) async {
 void deleteImageByDirectory(Directory directory, int sequence) {
   File.fromUri(directory.uri.resolve(sequence.toString()))
       .deleteSync(recursive: true);
+}
+
+Future<bool> encodeImage(File carrier, File data) async {
+  Directory appDocDir = await getApplicationDocumentsDirectory();
+  SharedPreferences pref = await SharedPreferences.getInstance();
+
+  int sequence = pref.getInt(SHARED_PREFERENCES_SEQUENCE_KEY) ?? 0;
+  ++sequence;
+
+  String resultPath =
+      appDocDir.path + "/" + IMAGES_DIR + "/" + sequence.toString();
+
+  try {
+    await Stegify.encode(carrier.path, data.path, resultPath);
+  } on PlatformException catch (err) {
+    if (err.message.contains("data file too large for this carrier")) {
+      return false;
+    } else {
+      rethrow;
+    }
+  }
+
+  String thumbnailPath =
+      appDocDir.path + "/" + THUMBNAILS_DIR + "/" + sequence.toString();
+
+  File thumbnail = await generateThumbnail(resultPath);
+  await thumbnail.copy(thumbnailPath);
+
+  return pref.setInt(SHARED_PREFERENCES_SEQUENCE_KEY, sequence);
 }

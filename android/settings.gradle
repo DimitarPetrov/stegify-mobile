@@ -1,4 +1,5 @@
 include ':app'
+include ':steg'
 
 def flutterProjectRoot = rootProject.projectDir.parentFile.toPath()
 
@@ -13,3 +14,5 @@ plugins.each { name, path ->
     include ":$name"
     project(":$name").projectDir = pluginDirectory
 }
+
+project(':steg').projectDir = new File(project(':flutter_stegify').projectDir, 'steg')

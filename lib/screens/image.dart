@@ -111,15 +111,18 @@ class ImageScreenState extends State<ImageScreen> {
           onTap: () async {
             List<ImageDTO> thumbnails = await getThumbnails();
             thumbnails.sort((i1, i2) => i1.sequence.compareTo(i2.sequence));
-            Navigator.push(
+            bool ok = await Navigator.push(
               context,
               CupertinoPageRoute(
                 builder: (context) => EncodeScreen(
-                  image: Image.file(widget.images[currentIndex]),
+                  image: widget.images[currentIndex],
                   thumbnails: thumbnails,
                 ),
               ),
             );
+            if (ok) {
+              Navigator.pop(context);
+            }
           },
           label: 'Encode',
           labelStyle: Theme.of(context).textTheme.button,

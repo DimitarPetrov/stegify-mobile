@@ -7,7 +7,7 @@ import 'package:stegify_mobile/util/utils.dart';
 import 'package:zefyr/zefyr.dart';
 
 class EncodeScreen extends StatefulWidget {
-  final Image image;
+  final File image;
   final List<ImageDTO> thumbnails;
 
   EncodeScreen({Key key, this.image, this.thumbnails}) : super(key: key);
@@ -46,14 +46,27 @@ class EncodeScreenState extends State<EncodeScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text("Encode"),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+          ),
           actions: <Widget>[
             Builder(builder: (context) {
               return checkMark || tab == 1
                   ? IconButton(
                       icon: Icon(Icons.check),
-                      onPressed: () {
+                      onPressed: () async {
                         if (tab == 0) {
-                          // TODO: encode image.
+                          File data = await getOriginalImage(
+                              thumbnails[index].sequence.toString());
+                          bool ok = await encodeImage(widget.image, data);
+                          if (!ok) {
+                            fileTooBigDialog(context);
+                          } else {
+                            Navigator.of(context).pop(true);
+                          }
                         } else {
                           print(_controller.document.toPlainText());
                           // TODO: get document and encode text.
@@ -91,7 +104,7 @@ class EncodeScreenState extends State<EncodeScreen> {
                     width: double.infinity,
                     height: double.infinity,
                     padding: EdgeInsets.all(12.0),
-                    child: widget.image,
+                    child: Image.file(widget.image),
                   ),
                 ),
                 Expanded(
@@ -157,7 +170,7 @@ class EncodeScreenState extends State<EncodeScreen> {
                     width: double.infinity,
                     height: double.infinity,
                     padding: EdgeInsets.all(12.0),
-                    child: widget.image,
+                    child: Image.file(widget.image),
                   ),
                 ),
                 Expanded(
@@ -200,5 +213,25 @@ class EncodeScreenState extends State<EncodeScreen> {
         this.thumbnails = thumbnails;
       });
     }
+  }
+
+  void fileTooBigDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('File too big!'),
+          content: const Text('Selected file is too big for this carrier!'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
