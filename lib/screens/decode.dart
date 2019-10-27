@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:stegify_mobile/util/utils.dart';
 import 'package:zefyr/zefyr.dart';
 
 class DecodeScreen extends StatefulWidget {
-  final Image image;
+  final File image;
 
   DecodeScreen({Key key, this.image}) : super(key: key);
 
@@ -63,7 +66,7 @@ class DecodeScreenState extends State<DecodeScreen> {
                     width: double.infinity,
                     height: double.infinity,
                     padding: EdgeInsets.all(12.0),
-                    child: widget.image,
+                    child: Image.file(widget.image),
                   ),
                 ),
                 SizedBox(height: 24),
@@ -77,7 +80,10 @@ class DecodeScreenState extends State<DecodeScreen> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () async {
+                      int seq = await decodeImage(widget.image);
+                      Navigator.of(context).pop(seq);
+                    },
                   ),
                 ),
                 SizedBox(height: 24),
@@ -92,7 +98,7 @@ class DecodeScreenState extends State<DecodeScreen> {
                     width: double.infinity,
                     height: double.infinity,
                     padding: EdgeInsets.all(12.0),
-                    child: widget.image,
+                    child: Image.file(widget.image),
                   ),
                 ),
                 Expanded(

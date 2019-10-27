@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:flutter_stegify/flutter_stegify.dart';
 import 'package:path_provider/path_provider.dart';
@@ -88,7 +87,34 @@ void deleteImageByDirectory(Directory directory, int sequence) {
       .deleteSync(recursive: true);
 }
 
-Future<bool> encodeImage(File carrier, File data) async {
+bool encodeImage(File carrier, File data) {
+  bool result = true;
+  getApplicationDocumentsDirectory().then((appDocDir) {
+    SharedPreferences.getInstance().then((pref) {
+      int sequence = pref.getInt(SHARED_PREFERENCES_SEQUENCE_KEY) ?? 0;
+      ++sequence;
+      String resultPath =
+          appDocDir.path + "/" + IMAGES_DIR + "/" + sequence.toString();
+      Stegify.encode(carrier.path, data.path, resultPath).then((val) {
+        String thumbnailPath =
+            appDocDir.path + "/" + THUMBNAILS_DIR + "/" + sequence.toString();
+        generateThumbnail(resultPath).then((thumbnail) {
+          thumbnail.copySync(thumbnailPath);
+          pref.setInt(SHARED_PREFERENCES_SEQUENCE_KEY, sequence);
+        });
+      }, onError: (err) {
+        if (err.message.contains("data file too large for this carrier")) {
+          result = false;
+        } else {
+          throw err;
+        }
+      });
+    });
+  });
+  return result;
+}
+
+Future<int> decodeImage(File carrier) async {
   Directory appDocDir = await getApplicationDocumentsDirectory();
   SharedPreferences pref = await SharedPreferences.getInstance();
 
@@ -98,15 +124,7 @@ Future<bool> encodeImage(File carrier, File data) async {
   String resultPath =
       appDocDir.path + "/" + IMAGES_DIR + "/" + sequence.toString();
 
-  try {
-    await Stegify.encode(carrier.path, data.path, resultPath);
-  } on PlatformException catch (err) {
-    if (err.message.contains("data file too large for this carrier")) {
-      return false;
-    } else {
-      rethrow;
-    }
-  }
+  await Stegify.decode(carrier.path, resultPath);
 
   String thumbnailPath =
       appDocDir.path + "/" + THUMBNAILS_DIR + "/" + sequence.toString();
@@ -114,5 +132,6 @@ Future<bool> encodeImage(File carrier, File data) async {
   File thumbnail = await generateThumbnail(resultPath);
   await thumbnail.copy(thumbnailPath);
 
-  return pref.setInt(SHARED_PREFERENCES_SEQUENCE_KEY, sequence);
+  pref.setInt(SHARED_PREFERENCES_SEQUENCE_KEY, sequence);
+  return sequence;
 }

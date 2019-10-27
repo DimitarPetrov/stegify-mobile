@@ -88,8 +88,7 @@ class GridState extends State<Grid> {
                           List<File> images = await getImages();
                           images.sort((f1, f2) => extractSequence(f1.path)
                               .compareTo(extractSequence(f2.path)));
-                          Navigator.push(
-                            context,
+                          int seq = await Navigator.of(context).push(
                             CupertinoPageRoute(
                               builder: (context) => ImageScreen(
                                 images: images,
@@ -98,6 +97,21 @@ class GridState extends State<Grid> {
                               ),
                             ),
                           );
+                          if (seq == null) {
+                            seq = -1;
+                          }
+                          while (seq != -1) {
+                            images = await getImages();
+                            seq = await Navigator.of(context).push(
+                              CupertinoPageRoute(
+                                builder: (context) => ImageScreen(
+                                  images: images,
+                                  index: findIndex(images, seq),
+                                  deleteCallback: _showDeleteDialog,
+                                ),
+                              ),
+                            );
+                          }
                         } else {
                           setState(() {
                             if (selected.contains(image.sequence)) {

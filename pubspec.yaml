@@ -27,7 +27,7 @@ dependencies:
   flutter_speed_dial: ^1.2.1
   shared_preferences: ^0.5.1+2
   zefyr: ^0.8.0
-  flutter_stegify: ^0.0.3
+  flutter_stegify: ^0.0.4
   esys_flutter_share:
     git: https://github.com/esysberlin/esys-flutter-share
 

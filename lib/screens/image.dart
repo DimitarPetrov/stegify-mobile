@@ -120,7 +120,7 @@ class ImageScreenState extends State<ImageScreen> {
                 ),
               ),
             );
-            if (ok) {
+            if (ok != null && ok) {
               Navigator.pop(context);
             }
           },
@@ -130,15 +130,17 @@ class ImageScreenState extends State<ImageScreen> {
         ),
         SpeedDialChild(
           child: Icon(Icons.call_split),
-          onTap: () {
-            Navigator.push(
-              context,
+          onTap: () async {
+            int seq = await Navigator.of(context).push(
               CupertinoPageRoute(
                 builder: (context) => DecodeScreen(
-                  image: Image.file(widget.images[currentIndex]),
+                  image: widget.images[currentIndex],
                 ),
               ),
             );
+            if (seq != null && seq != -1) {
+              Navigator.of(context).pop(seq);
+            }
           },
           label: 'Decode',
           labelStyle: Theme.of(context).textTheme.button,

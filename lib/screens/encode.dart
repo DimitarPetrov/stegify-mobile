@@ -46,12 +46,6 @@ class EncodeScreenState extends State<EncodeScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text("Encode"),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.of(context).pop(false);
-            },
-          ),
           actions: <Widget>[
             Builder(builder: (context) {
               return checkMark || tab == 1
@@ -61,7 +55,7 @@ class EncodeScreenState extends State<EncodeScreen> {
                         if (tab == 0) {
                           File data = await getOriginalImage(
                               thumbnails[index].sequence.toString());
-                          bool ok = await encodeImage(widget.image, data);
+                          bool ok = encodeImage(widget.image, data);
                           if (!ok) {
                             fileTooBigDialog(context);
                           } else {
