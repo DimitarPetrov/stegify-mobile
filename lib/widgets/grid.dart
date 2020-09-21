@@ -8,6 +8,8 @@ import 'package:stegify_mobile/models/image.dart';
 import 'package:stegify_mobile/screens/image.dart';
 import 'package:stegify_mobile/util/utils.dart';
 
+typedef void RebuildImageGridCallback();
+
 class Grid extends StatefulWidget {
   final Stream<Event> stream;
   final VoidCallback selection;
@@ -94,6 +96,7 @@ class GridState extends State<Grid> {
                                 images: images,
                                 index: findIndex(images, image.sequence),
                                 deleteCallback: _showDeleteDialog,
+                                rebuildGrid: () => setState(() {}),
                               ),
                             ),
                           );
@@ -108,6 +111,7 @@ class GridState extends State<Grid> {
                                   images: images,
                                   index: findIndex(images, seq),
                                   deleteCallback: _showDeleteDialog,
+                                  rebuildGrid: () => setState(() {}),
                                 ),
                               ),
                             );

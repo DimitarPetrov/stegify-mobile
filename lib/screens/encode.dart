@@ -1,16 +1,23 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stegify/flutter_stegify.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stegify_mobile/models/image.dart';
 import 'package:stegify_mobile/util/utils.dart';
+import 'package:stegify_mobile/widgets/grid.dart';
 import 'package:zefyr/zefyr.dart';
 
 class EncodeScreen extends StatefulWidget {
   final File image;
   final List<ImageDTO> thumbnails;
+  final RebuildImageGridCallback rebuildGrid;
 
-  EncodeScreen({Key key, this.image, this.thumbnails}) : super(key: key);
+  EncodeScreen({Key key, this.image, this.thumbnails, this.rebuildGrid}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -22,6 +29,7 @@ class EncodeScreenState extends State<EncodeScreen> {
   int tab = 0;
   int index = -1;
   bool checkMark = false;
+  bool _loading = false;
   List<ImageDTO> thumbnails;
 
   ZefyrController _controller;
@@ -49,18 +57,26 @@ class EncodeScreenState extends State<EncodeScreen> {
           actions: <Widget>[
             Builder(builder: (context) {
               return checkMark || tab == 1
-                  ? IconButton(
-                      icon: Icon(Icons.check),
+                  ? MaterialButton(
+                      child: setUpButtonChild(),
                       onPressed: () async {
                         if (tab == 0) {
+                          setState(() {
+                            _loading = true;
+                          });
                           File data = await getOriginalImage(
                               thumbnails[index].sequence.toString());
-                          bool ok = encodeImage(widget.image, data);
-                          if (!ok) {
-                            fileTooBigDialog(context);
-                          } else {
-                            Navigator.of(context).pop(true);
-                          }
+                          encodeImage(widget.image, data, (ok) {
+                            setState(() {
+                              _loading = false;
+                            });
+                            if (!ok) {
+                              fileTooBigDialog(context);
+                            } else {
+                              widget.rebuildGrid();
+                              Navigator.of(context).pop(true);
+                            }
+                          });
                         } else {
                           print(_controller.document.toPlainText());
                           // TODO: get document and encode text.
@@ -207,6 +223,15 @@ class EncodeScreenState extends State<EncodeScreen> {
         this.thumbnails = thumbnails;
       });
     }
+  }
+
+  Widget setUpButtonChild() {
+    if (!_loading) {
+      return Icon(Icons.check);
+    }
+    return CircularProgressIndicator(
+      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+    );
   }
 
   void fileTooBigDialog(BuildContext context) {

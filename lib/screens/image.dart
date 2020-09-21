@@ -10,6 +10,7 @@ import 'package:photo_view/photo_view_gallery.dart';
 import 'package:stegify_mobile/models/image.dart';
 import 'package:stegify_mobile/screens/encode.dart';
 import 'package:stegify_mobile/util/utils.dart';
+import 'package:stegify_mobile/widgets/grid.dart';
 
 import 'decode.dart';
 
@@ -19,8 +20,9 @@ class ImageScreen extends StatefulWidget {
   final List<File> images;
   final int index;
   final DeleteCallback deleteCallback;
+  final RebuildImageGridCallback rebuildGrid;
 
-  ImageScreen({Key key, this.images, this.index, this.deleteCallback})
+  ImageScreen({Key key, this.images, this.index, this.deleteCallback, this.rebuildGrid})
       : super(key: key);
 
   @override
@@ -83,9 +85,17 @@ class ImageScreenState extends State<ImageScreen> {
         },
         scrollPhysics: const BouncingScrollPhysics(),
         itemCount: widget.images.length,
-        loadingChild: new Container(
-            alignment: FractionalOffset.center,
-            child: new CircularProgressIndicator()),
+        loadingBuilder: (context, event) => Center(
+          child: Container(
+            width: 20.0,
+            height: 20.0,
+            child: CircularProgressIndicator(
+              value: event == null
+                  ? 0
+                  : event.cumulativeBytesLoaded / event.expectedTotalBytes,
+            ),
+          ),
+        ),
         pageController: PageController(initialPage: widget.index),
         onPageChanged: (newIndex) {
           setState(() {
@@ -117,6 +127,7 @@ class ImageScreenState extends State<ImageScreen> {
                 builder: (context) => EncodeScreen(
                   image: widget.images[currentIndex],
                   thumbnails: thumbnails,
+                  rebuildGrid: widget.rebuildGrid
                 ),
               ),
             );

@@ -7,6 +7,8 @@ import 'package:stegify_mobile/routes.dart';
 import 'package:stegify_mobile/util/utils.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   Directory appDocDir = await getApplicationDocumentsDirectory();
   new Directory(appDocDir.path + "/" + IMAGES_DIR).create();
   new Directory(appDocDir.path + "/" + THUMBNAILS_DIR).create();
