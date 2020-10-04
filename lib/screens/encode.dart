@@ -1,12 +1,8 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_stegify/flutter_stegify.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stegify_mobile/models/image.dart';
 import 'package:stegify_mobile/util/utils.dart';
 import 'package:stegify_mobile/widgets/grid.dart';
@@ -17,7 +13,8 @@ class EncodeScreen extends StatefulWidget {
   final List<ImageDTO> thumbnails;
   final RebuildImageGridCallback rebuildGrid;
 
-  EncodeScreen({Key key, this.image, this.thumbnails, this.rebuildGrid}) : super(key: key);
+  EncodeScreen({Key key, this.image, this.thumbnails, this.rebuildGrid})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -66,17 +63,13 @@ class EncodeScreenState extends State<EncodeScreen> {
                           });
                           File data = await getOriginalImage(
                               thumbnails[index].sequence.toString());
-                          encodeImage(widget.image, data, (ok) {
-                            setState(() {
-                              _loading = false;
-                            });
-                            if (!ok) {
-                              fileTooBigDialog(context);
-                            } else {
-                              widget.rebuildGrid();
-                              Navigator.of(context).pop(true);
-                            }
-                          });
+                          bool ok = await encodeImage(widget.image, data);
+                          if (ok) {
+                            widget.rebuildGrid();
+                            Navigator.of(context).pop(true);
+                          } else {
+                            fileTooBigDialog(context);
+                          }
                         } else {
                           print(_controller.document.toPlainText());
                           // TODO: get document and encode text.
@@ -211,10 +204,12 @@ class EncodeScreenState extends State<EncodeScreen> {
   }
 
   void _openGallery() async {
-    File image = await ImagePicker.pickImage(
+    ImagePicker imagePicker = ImagePicker();
+    PickedFile pickedImage = await imagePicker.getImage(
       source: ImageSource.gallery,
     );
-    if (image != null) {
+    if (pickedImage != null) {
+      File image = File(pickedImage.path);
       await saveImage(image);
       // Reload images after adding a new one.
       List<ImageDTO> thumbnails = await getThumbnails();
@@ -229,9 +224,7 @@ class EncodeScreenState extends State<EncodeScreen> {
     if (!_loading) {
       return Icon(Icons.check);
     }
-    return CircularProgressIndicator(
-      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-    );
+    return CircularProgressIndicator();
   }
 
   void fileTooBigDialog(BuildContext context) {

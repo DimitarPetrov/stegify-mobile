@@ -22,7 +22,8 @@ class ImageScreen extends StatefulWidget {
   final DeleteCallback deleteCallback;
   final RebuildImageGridCallback rebuildGrid;
 
-  ImageScreen({Key key, this.images, this.index, this.deleteCallback, this.rebuildGrid})
+  ImageScreen(
+      {Key key, this.images, this.index, this.deleteCallback, this.rebuildGrid})
       : super(key: key);
 
   @override
@@ -125,10 +126,9 @@ class ImageScreenState extends State<ImageScreen> {
               context,
               CupertinoPageRoute(
                 builder: (context) => EncodeScreen(
-                  image: widget.images[currentIndex],
-                  thumbnails: thumbnails,
-                  rebuildGrid: widget.rebuildGrid
-                ),
+                    image: widget.images[currentIndex],
+                    thumbnails: thumbnails,
+                    rebuildGrid: widget.rebuildGrid),
               ),
             );
             if (ok != null && ok) {
@@ -142,16 +142,15 @@ class ImageScreenState extends State<ImageScreen> {
         SpeedDialChild(
           child: Icon(Icons.call_split),
           onTap: () async {
-            int seq = await Navigator.of(context).push(
+            await Navigator.of(context).push(
               CupertinoPageRoute(
                 builder: (context) => DecodeScreen(
                   image: widget.images[currentIndex],
+                  rebuildGrid: widget.rebuildGrid,
                 ),
               ),
             );
-            if (seq != null && seq != -1) {
-              Navigator.of(context).pop(seq);
-            }
+            Navigator.pop(context);
           },
           label: 'Decode',
           labelStyle: Theme.of(context).textTheme.button,

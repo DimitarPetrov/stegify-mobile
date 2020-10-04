@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
     <key>NSPhotoLibraryUsageDescription</key>
-    <string></string>
+    <string>Pick an image for manipulation.</string>
     <key>NSCameraUsageDescription</key>
-    <string></string>
+    <string>Take a photo for manipulation.</string>
     <key>NSMicrophoneUsageDescription</key>
-    <string></string>
+    <string>Not needed at all.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>

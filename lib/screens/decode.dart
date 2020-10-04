@@ -3,12 +3,14 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stegify_mobile/util/utils.dart';
+import 'package:stegify_mobile/widgets/grid.dart';
 import 'package:zefyr/zefyr.dart';
 
 class DecodeScreen extends StatefulWidget {
   final File image;
+  final RebuildImageGridCallback rebuildGrid;
 
-  DecodeScreen({Key key, this.image}) : super(key: key);
+  DecodeScreen({Key key, this.image, this.rebuildGrid}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -81,8 +83,13 @@ class DecodeScreenState extends State<DecodeScreen> {
                       ),
                     ),
                     onPressed: () async {
-                      int seq = await decodeImage(widget.image);
-                      Navigator.of(context).pop(seq);
+                      bool ok = await decodeImage(widget.image);
+                      if (ok) {
+                        widget.rebuildGrid();
+                        Navigator.of(context).pop();
+                      } else {
+                        fileNotEncodedDialog(context);
+                      }
                     },
                   ),
                 ),
@@ -142,6 +149,27 @@ class DecodeScreenState extends State<DecodeScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void fileNotEncodedDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Encoded file not found!'),
+          content: const Text(
+              'There is nothing to decode! Make sure that something is previously encoded in the selected file.'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -24,7 +24,7 @@ final ThemeData light = ThemeData(
   appBarTheme: AppBarTheme(
     elevation: 0,
     textTheme: TextTheme(
-      title: TextStyle(
+      headline6: TextStyle(
         color: darkBackground,
         fontSize: 18.0,
         fontWeight: FontWeight.w800,
@@ -45,7 +45,7 @@ final ThemeData dark = ThemeData(
   appBarTheme: AppBarTheme(
     elevation: 0,
     textTheme: TextTheme(
-      title: TextStyle(
+      headline6: TextStyle(
         color: lightBackground,
         fontSize: 18.0,
         fontWeight: FontWeight.w800,

@@ -24,7 +24,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>(); // ADD THIS LINE
+  final GlobalKey<ScaffoldState> _scaffoldKey =
+      new GlobalKey<ScaffoldState>(); // ADD THIS LINE
   bool selecting = false;
   StreamController<Event> _controller = StreamController<Event>();
 
@@ -107,7 +108,8 @@ class _HomeState extends State<Home> {
           UserAccountsDrawerHeader(
             accountName: Text(
               "Stegify",
-              style: Theme.of(context).textTheme.title.apply(fontSizeDelta: 4),
+              style:
+                  Theme.of(context).textTheme.headline6.apply(fontSizeDelta: 4),
             ),
             accountEmail: Text(
                 "Developer Contact: d.n.petrovv@gmail.com"), // TODO: Rate ot Google play!
@@ -125,7 +127,7 @@ class _HomeState extends State<Home> {
               "Dark Mode",
               style: Theme.of(context)
                   .textTheme
-                  .subtitle
+                  .subtitle2
                   .apply(fontSizeDelta: 2, fontWeightDelta: 2),
             ),
             trailing: Switch(
@@ -167,10 +169,12 @@ class _HomeState extends State<Home> {
   }
 
   void _openCamera() async {
-    File image = await ImagePicker.pickImage(
+    ImagePicker imagePicker = ImagePicker();
+    PickedFile pickedImage = await imagePicker.getImage(
       source: ImageSource.camera,
     );
-    if (image != null) {
+    if (pickedImage != null) {
+      File image = File(pickedImage.path);
       await saveImage(image);
       // Reload images after adding a new one.
       setState(() {});
@@ -178,10 +182,12 @@ class _HomeState extends State<Home> {
   }
 
   void _openGallery() async {
-    File image = await ImagePicker.pickImage(
+    ImagePicker imagePicker = ImagePicker();
+    PickedFile pickedImage = await imagePicker.getImage(
       source: ImageSource.gallery,
     );
-    if (image != null) {
+    if (pickedImage != null) {
+      File image = File(pickedImage.path);
       await saveImage(image);
       // Reload images after adding a new one.
       setState(() {});
